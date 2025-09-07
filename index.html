@@ -1,202 +1,317 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>90s Cafe Bhilai Chapter 1</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>90s Cafe Bhilai Chapter 1</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="header-content">
-      <div class="logo" onclick="goHome()">☕ 90s Cafe Bhilai Chapter 1</div>
-      <div class="header-actions">
-        <div class="connection-status" id="connectionStatus">
-          <span class="status-dot online" id="statusDot"></span>
-          <span id="statusText">Connected</span>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo" onclick="goHome()">
+                ☕ 90s Cafe Bhilai Chapter 1
+            </div>
+            <div class="header-actions">
+                <div class="connection-status" id="connectionStatus">
+                    <span class="status-dot online" id="statusDot"></span>
+                    <span id="statusText">Connected</span>
+                </div>
+                <button class="cart-btn" id="cartBtn" onclick="showCart()">
+                    🛒 Cart (<span id="cartCount">0</span>)
+                </button>
+            </div>
         </div>
-        <button class="cart-btn" id="cartBtn" onclick="showCart()">🛒 Cart (<span id="cartCount">0</span>)</button>
-      </div>
     </div>
-  </div>
 
-  <div class="container">
-    <div class="page active" id="homepage">
-      <div class="homepage">
-        <div class="logo-animation">☕</div>
-        <div class="welcome-text">
-          <h1>Welcome to 90s Cafe</h1>
-          <p>Experience the nostalgia of the 90s - Now with Real-time Updates!</p>
+    <div class="container">
+        <!-- Homepage -->
+        <div class="page active" id="homepage">
+            <div class="homepage">
+                <div class="logo-animation">☕</div>
+                <div class="welcome-text">
+                    <h1>Welcome to 90s Cafe</h1>
+                    <p>Experience the nostalgia of the 90s - Now with Real UPI Payments!</p>
+                </div>
+                <div class="home-buttons">
+                    <button class="btn" onclick="showMenu()">
+                        🍽️ Start Ordering
+                    </button>
+                    <button class="btn btn-secondary" onclick="showAdminLogin()">
+                        🔐 Admin Login
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="home-buttons">
-          <button class="btn" onclick="showMenu()">🍽️ Start Ordering</button>
-          <button class="btn btn-secondary" onclick="showAdminLogin()">🔐 Admin Login</button>
+
+        <!-- Menu Page -->
+        <div class="page" id="menuPage">
+            <div class="page-header">
+                <button class="back-btn" onclick="goHome()">← Back</button>
+                <h2>Our Menu</h2>
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span>Live Updates</span>
+                </div>
+            </div>
+            
+            <div class="menu-categories" id="menuCategories"></div>
+            <div class="menu-grid" id="menuGrid"></div>
         </div>
-      </div>
-    </div>
 
-    <div class="page" id="menuPage">
-      <div class="page-header">
-        <button class="back-btn" onclick="goHome()">← Back</button>
-        <h2>Our Menu</h2>
-        <div class="live-indicator"><span class="live-dot"></span><span>Live Updates</span></div>
-      </div>
-      <div class="menu-categories" id="menuCategories"></div>
-      <div class="menu-grid" id="menuGrid"></div>
-    </div>
-
-    <div class="page" id="cartPage">
-      <div class="page-header">
-        <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
-        <h2>Your Cart</h2>
-      </div>
-      <div class="cart-items" id="cartItems"></div>
-      <div class="cart-summary" id="cartSummary"></div>
-    </div>
-
-    <div class="page" id="checkoutPage">
-      <div class="page-header">
-        <button class="back-btn" onclick="showCart()">← Back to Cart</button>
-        <h2>Checkout</h2>
-      </div>
-      <div style="display: grid; grid-template-columns: 1fr 300px; gap: 2rem;">
-        <div>
-          <h3>Order Details</h3>
-          <div id="checkoutItems"></div>
-          <h3 style="margin-top: 2rem;">Delivery Option</h3>
-          <label style="display: block; margin: 1rem 0; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem;">
-            <input type="radio" name="orderType" value="dineIn" checked /> 🍽️ Dine In (Table T5)
-          </label>
-          <label style="display: block; margin: 1rem 0; padding: 1rem; border: 2px solid #e5e7eb; border-radius: 0.5rem;">
-            <input type="radio" name="orderType" value="takeaway" /> 📦 Takeaway
-          </label>
+        <!-- Cart Page -->
+        <div class="page" id="cartPage">
+            <div class="page-header">
+                <button class="back-btn" onclick="showMenu()">← Back to Menu</button>
+                <h2>Your Cart</h2>
+                <div></div>
+            </div>
+            
+            <div class="cart-items" id="cartItems"></div>
+            <div class="cart-summary" id="cartSummary"></div>
         </div>
-        <div>
-          <div class="cart-summary">
-            <h3>Order Summary</h3>
-            <div id="checkoutSummary"></div>
-            <button class="btn" style="width: 100%; margin-top: 1rem;" onclick="showPaymentModal()">💳 Select Payment Method</button>
-          </div>
+
+        <!-- Checkout Page -->
+        <div class="page" id="checkoutPage">
+            <div class="page-header">
+                <button class="back-btn" onclick="showCart()">← Back to Cart</button>
+                <h2>Checkout</h2>
+                <div></div>
+            </div>
+            
+            <div class="checkout-container">
+                <div class="checkout-left">
+                    <h3>Order Details</h3>
+                    <div id="checkoutItems"></div>
+                    
+                    <h3 style="margin-top: 2rem;">Delivery Option</h3>
+                    <label class="radio-option">
+                        <input type="radio" name="orderType" value="dineIn" checked>
+                        🍽️ Dine In (Table T5)
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="orderType" value="takeaway">
+                        📦 Takeaway
+                    </label>
+                </div>
+                
+                <div class="checkout-right">
+                    <div class="cart-summary">
+                        <h3>Order Summary</h3>
+                        <div id="checkoutSummary"></div>
+                        <button class="btn payment-btn" onclick="showPaymentModal()">
+                            💳 Select Payment Method
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="page" id="successPage">
-      <div class="success-container">
-        <div class="success-icon">✅</div>
-        <h2>Order Placed Successfully!</h2>
-        <div class="order-tracking" id="orderTracking">
-          <div class="tracking-step active"><div class="step-icon">📋</div><div class="step-text">Order Received</div></div>
-          <div class="tracking-step"><div class="step-icon">✅</div><div class="step-text">Confirmed</div></div>
-          <div class="tracking-step"><div class="step-icon">👨‍🍳</div><div class="step-text">Preparing</div></div>
-          <div class="tracking-step"><div class="step-icon">🛎️</div><div class="step-text">Ready</div></div>
+        <!-- Payment Processing Page -->
+        <div class="page" id="paymentProcessPage">
+            <div class="payment-process-container">
+                <div class="payment-icon">💳</div>
+                <h2>Processing Payment</h2>
+                <div class="payment-status" id="paymentStatus">
+                    <p>Opening payment app...</p>
+                    <div class="loading-spinner"></div>
+                </div>
+                <div class="payment-buttons">
+                    <button class="btn btn-secondary" onclick="retryPayment()">Retry Payment</button>
+                    <button class="btn" onclick="verifyPayment()">I've Paid - Verify</button>
+                </div>
+            </div>
         </div>
-        <div class="order-details" id="orderDetails"></div>
-        <button class="btn" onclick="goHome()">🏠 Back to Home</button>
-      </div>
-    </div>
 
-    <div class="page" id="adminLoginPage">
-      <div class="login-container">
-        <div class="login-form">
-          <div class="login-header"><i>🔐</i><h2>Admin Login</h2></div>
-          <form onsubmit="adminLogin(event)">
-            <div class="form-group"><input type="text" id="adminUsername" placeholder="Username" required /></div>
-            <div class="form-group"><input type="password" id="adminPassword" placeholder="Password" required /></div>
-            <button type="submit" class="btn" style="width: 100%;">Login</button>
-          </form>
-          <div class="login-error" id="loginError"></div>
-          <button class="back-btn" onclick="goHome()" style="margin-top: 1rem;">← Back to Home</button>
+        <!-- Success Page -->
+        <div class="page" id="successPage">
+            <div class="success-container">
+                <div class="success-icon">✅</div>
+                <h2>Order Placed Successfully!</h2>
+                <div class="order-tracking" id="orderTracking">
+                    <div class="tracking-step active">
+                        <div class="step-icon">📋</div>
+                        <div class="step-text">Order Received</div>
+                    </div>
+                    <div class="tracking-step">
+                        <div class="step-icon">✅</div>
+                        <div class="step-text">Confirmed</div>
+                    </div>
+                    <div class="tracking-step">
+                        <div class="step-icon">👨‍🍳</div>
+                        <div class="step-text">Preparing</div>
+                    </div>
+                    <div class="tracking-step">
+                        <div class="step-icon">🛎️</div>
+                        <div class="step-text">Ready</div>
+                    </div>
+                </div>
+                <div class="order-details" id="orderDetails"></div>
+                <button class="btn" onclick="goHome()">
+                    🏠 Back to Home
+                </button>
+            </div>
         </div>
-      </div>
-    </div>
 
-    <div class="page" id="adminPage">
-      <div class="admin-header">
-        <h2>Admin Dashboard - 90s Cafe</h2>
-        <div class="admin-controls">
-          <div class="live-orders-count"><span>Live Orders: </span><span class="live-count" id="liveOrdersCount">0</span></div>
-          <button class="btn" onclick="adminLogout()">🚪 Logout</button>
+        <!-- Admin Login -->
+        <div class="page" id="adminLoginPage">
+            <div class="login-container">
+                <div class="login-form">
+                    <div class="login-header">
+                        <i>🔐</i>
+                        <h2>Admin Login</h2>
+                    </div>
+                    <form onsubmit="adminLogin(event)">
+                        <div class="form-group">
+                            <input type="text" id="adminUsername" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="adminPassword" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Login</button>
+                    </form>
+                    <div class="login-error" id="loginError"></div>
+                    <button class="back-btn" onclick="goHome()" style="margin-top: 1rem;">← Back to Home</button>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="admin-tabs">
-        <button class="tab-btn active" onclick="showAdminTab('orders')" data-tab="orders">📋 Live Orders</button>
-        <button class="tab-btn" onclick="showAdminTab('menu')" data-tab="menu">🍽️ Stock Management</button>
-        <button class="tab-btn" onclick="showAdminTab('analytics')" data-tab="analytics">📊 Analytics</button>
-      </div>
-      <div class="tab-content active" id="ordersTab">
-        <h3>Live Orders - Real-time Updates</h3>
-        <div class="orders-grid" id="ordersGrid"></div>
-      </div>
-      <div class="tab-content" id="menuTab">
-        <h3>Stock Management - Live Sync</h3>
-        <div class="stock-controls-header"><p>Changes sync instantly across all customer devices</p></div>
-        <div class="admin-menu-grid" id="adminMenuGrid"></div>
-      </div>
-      <div class="tab-content" id="analyticsTab">
-        <h3>Real-time Analytics</h3>
-        <div class="stats-grid" id="statsGrid"></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- Payment Modal -->
-  <div class="modal" id="paymentModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Select Payment Method</h3>
-        <button class="modal-close" onclick="closeModal()">&times;</button>
-      </div>
-      <div class="payment-options">
-        <div class="payment-option" onclick="selectPayment('cash')">
-          <div class="payment-icon">💵</div>
-          <div><strong>Cash on Counter</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Pay at the restaurant</div></div>
+        <!-- Admin Dashboard -->
+        <div class="page" id="adminPage">
+            <div class="admin-header">
+                <h2>Admin Dashboard - 90s Cafe</h2>
+                <div class="admin-controls">
+                    <div class="live-orders-count">
+                        <span>Live Orders: </span>
+                        <span class="live-count" id="liveOrdersCount">0</span>
+                    </div>
+                    <button class="btn" onclick="adminLogout()">🚪 Logout</button>
+                </div>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="tab-btn active" onclick="showAdminTab('orders')" data-tab="orders">📋 Live Orders</button>
+                <button class="tab-btn" onclick="showAdminTab('menu')" data-tab="menu">🍽️ Stock Management</button>
+                <button class="tab-btn" onclick="showAdminTab('analytics')" data-tab="analytics">📊 Analytics</button>
+            </div>
+            
+            <div class="tab-content active" id="ordersTab">
+                <h3>Live Orders - Real-time Updates</h3>
+                <div class="orders-grid" id="ordersGrid"></div>
+            </div>
+            
+            <div class="tab-content" id="menuTab">
+                <h3>Stock Management - Live Sync</h3>
+                <div class="stock-controls-header">
+                    <p>Changes sync instantly across all customer devices</p>
+                </div>
+                <div class="admin-menu-grid" id="adminMenuGrid"></div>
+            </div>
+            
+            <div class="tab-content" id="analyticsTab">
+                <h3>Real-time Analytics</h3>
+                <div class="stats-grid" id="statsGrid"></div>
+            </div>
         </div>
-        <div class="payment-option" onclick="selectPayment('upi')">
-          <div class="payment-icon">📱</div>
-          <div><strong>UPI Payment</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Opens your UPI app instantly</div></div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Select Payment Method</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option" onclick="selectPayment('cash')">
+                    <div class="payment-icon">💵</div>
+                    <div>
+                        <strong>Cash on Counter</strong>
+                        <div class="payment-desc">Pay at the restaurant</div>
+                    </div>
+                </div>
+                <div class="payment-option" onclick="selectPayment('upi')">
+                    <div class="payment-icon">📱</div>
+                    <div>
+                        <strong>UPI Payment</strong>
+                        <div class="payment-desc">Opens GPay/PhonePe instantly</div>
+                    </div>
+                </div>
+                <div class="payment-option" onclick="selectPayment('card')">
+                    <div class="payment-icon">💳</div>
+                    <div>
+                        <strong>Card Payment</strong>
+                        <div class="payment-desc">Credit/Debit cards</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="payment-option" onclick="selectPayment('card')">
-          <div class="payment-icon">💳</div>
-          <div><strong>Card Payment</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Credit/Debit cards</div></div>
+    </div>
+
+    <!-- UPI Apps Modal -->
+    <div class="modal" id="upiModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Choose UPI App</h3>
+                <button class="modal-close" onclick="closeUpiModal()">&times;</button>
+            </div>
+            <div class="payment-options">
+                <div class="payment-option upi-option" onclick="openUPIApp('googlepay')">
+                    <div class="payment-icon">💳</div>
+                    <div>
+                        <strong>Google Pay</strong>
+                        <div class="payment-desc">Opens Google Pay app</div>
+                    </div>
+                </div>
+                <div class="payment-option upi-option" onclick="openUPIApp('phonepe')">
+                    <div class="payment-icon">📱</div>
+                    <div>
+                        <strong>PhonePe</strong>
+                        <div class="payment-desc">Opens PhonePe app</div>
+                    </div>
+                </div>
+                <div class="payment-option upi-option" onclick="openUPIApp('paytm')">
+                    <div class="payment-icon">🅿️</div>
+                    <div>
+                        <strong>Paytm</strong>
+                        <div class="payment-desc">Opens Paytm UPI</div>
+                    </div>
+                </div>
+                <div class="payment-option upi-option" onclick="openUPIApp('bhim')">
+                    <div class="payment-icon">🏦</div>
+                    <div>
+                        <strong>BHIM UPI</strong>
+                        <div class="payment-desc">Government UPI app</div>
+                    </div>
+                </div>
+                <div class="payment-option upi-option" onclick="openUPIApp('amazonpay')">
+                    <div class="payment-icon">🛒</div>
+                    <div>
+                        <strong>Amazon Pay</strong>
+                        <div class="payment-desc">Opens Amazon Pay UPI</div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <!-- UPI Modal -->
-  <div class="modal" id="upiModal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Choose UPI App</h3>
-        <button class="modal-close" onclick="closeUpiModal()">&times;</button>
-      </div>
-      <div class="payment-options">
-        <div class="payment-option" onclick="processRealUPIPayment('phonepe')"><div class="payment-icon">📱</div><div><strong>PhonePe</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Opens PhonePe app directly</div></div></div>
-        <div class="payment-option" onclick="processRealUPIPayment('googlepay')"><div class="payment-icon">💳</div><div><strong>Google Pay</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Opens Google Pay app</div></div></div>
-        <div class="payment-option" onclick="processRealUPIPayment('paytm')"><div class="payment-icon">🅿️</div><div><strong>Paytm</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Opens Paytm UPI</div></div></div>
-        <div class="payment-option" onclick="processRealUPIPayment('bhim')"><div class="payment-icon">🏦</div><div><strong>BHIM UPI</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Government UPI app</div></div></div>
-        <div class="payment-option" onclick="processRealUPIPayment('upi_id')"><div class="payment-icon">🆔</div><div><strong>Enter UPI ID</strong><div style="font-size: 0.9rem; color: #e5e7eb;">Manual UPI ID entry</div></div></div>
-      </div>
+    <!-- Notifications -->
+    <div class="notification" id="notification">
+        <div class="notification-content">
+            <div class="notification-icon" id="notificationIcon">🔔</div>
+            <div class="notification-text" id="notificationMessage">Notification message</div>
+        </div>
     </div>
-  </div>
 
-  <div class="notification" id="notification">
-    <div class="notification-content">
-      <div class="notification-icon" id="notificationIcon">🔔</div>
-      <div class="notification-text" id="notificationMessage">Notification message</div>
+    <div class="stock-notification" id="stockNotification">
+        <div class="stock-notification-content">
+            <div class="stock-icon">📦</div>
+            <div class="stock-text" id="stockText">Stock updated</div>
+        </div>
     </div>
-  </div>
 
-  <div class="stock-notification" id="stockNotification">
-    <div class="stock-notification-content">
-      <div class="stock-icon">📦</div>
-      <div class="stock-text" id="stockText">Stock updated</div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
-              </html>
-        
+</html>
